@@ -6,6 +6,7 @@ coffee = require 'gulp-coffee'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
 gulpJade = require 'gulp-jade'
+bowerRequire = require 'bower-requirejs'
 
 sourcemaps = require 'gulp-sourcemaps'
 
@@ -18,12 +19,22 @@ source =
   html: [ 'src/**/*.jade' ]
 
 target =
-  public: 'build/'
+  public: 'build/objects'
   maps: 'maps'
 
 # Clean Task
 gulp.task 'clean', (cb) ->
-  del [ 'build' ], cb
+  del [ 'build/' ], cb
+
+# Build out RequireJS config from bower
+gulp.task 'bower', (cb) ->
+  options =
+    baseUrl: 'src/'
+    config: 'src/require.config.js'
+    transitive: true
+
+  bowerRequire options, (rjsConfig) ->
+    cb()
 
 # Build out scripts
 gulp.task 'scripts', [ 'clean' ], () ->
