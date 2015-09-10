@@ -51,6 +51,7 @@ gulp.task 'scripts', [ 'clean' ], () ->
       pathModifier: (path) ->
         path.replace /^.*\/src\/js\//, ''
           .replace /^.*\/bower_components\//, ''
+          .replace /\.js$/, ''
     }))
     .pipe(sourcemaps.write())
 
