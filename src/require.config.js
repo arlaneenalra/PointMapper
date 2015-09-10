@@ -3,7 +3,7 @@ require.config({
 
   },
   paths: {
-//    "phaser-official": "../bower_components/phaser-official/build/phaser"
+    "commonjs-require": "../bower_components/commonjs-require/commonjs-require"
   },
   packages: [
 

@@ -1,3 +1,5 @@
 # Add coffee script code here
-alert('from Coffee');
+alert('from Coffee')
+
+boo = require 'js/app'
 

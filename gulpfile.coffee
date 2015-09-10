@@ -6,7 +6,9 @@ coffee = require 'gulp-coffee'
 concat = require 'gulp-concat'
 uglify = require 'gulp-uglify'
 gulpJade = require 'gulp-jade'
-bowerRequire = require 'bower-requirejs'
+bower = require 'gulp-bower'
+bowerFiles = require 'gulp-main-bower-files'
+wrapCommonJs  = require 'gulp-wrap-commonjs'
 
 sourcemaps = require 'gulp-sourcemaps'
 
@@ -14,8 +16,8 @@ jade = require 'jade'
 del = require 'del'
 
 source =
-  coffee: [ 'src/**/*.coffee' ]
-  js: [ 'src/**/*.js' ]
+  coffee: [ 'src/js/**/*.coffee' ]
+  js: [ 'src/js/**/*.js' ]
   html: [ 'src/**/*.jade' ]
 
 target =
@@ -28,25 +30,29 @@ gulp.task 'clean', (cb) ->
 
 # Build out RequireJS config from bower
 gulp.task 'bower', (cb) ->
-  options =
-    baseUrl: 'src/'
-    config: 'src/require.config.js'
-    transitive: true
-
-  bowerRequire options, (rjsConfig) ->
-    cb()
+  bower()
 
 # Build out scripts
-gulp.task 'scripts', [ 'clean' ], () ->
+gulp.task 'scripts', [ 'clean', 'bower' ], () ->
+
+  # Load bower files
+  bowerPipe = gulp.src('./bower.json')
+    .pipe(bowerFiles(".*common-require.*"))
+
+  # Compile Coffee script
   coffeePipe = gulp.src(source.coffee)
     .pipe(sourcemaps.init({ loadMaps: true}))
     .pipe(coffee()).on('error', gutil.log)
     .pipe(sourcemaps.write())
 
-
-  merge(coffeePipe, gulp.src(source.js))
+  merge(bowerPipe, coffeePipe, gulp.src(source.js))
     .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(uglify())
+    .pipe(wrapCommonJs({
+      pathModifier: (path) ->
+        path.replace /^.*\/src\/js\//, ''
+          .replace /^.*\/bower_components\//, ''
+    }))
+    # .pipe(uglify())
     .pipe(concat('all.min.js'))
     .pipe(sourcemaps.write(target.maps))
     .pipe(gulp.dest(target.public))
