@@ -33,26 +33,30 @@ gulp.task 'bower', (cb) ->
   bower()
 
 # Build out scripts
-gulp.task 'scripts', [ 'clean', 'bower' ], () ->
+gulp.task 'scripts', [ 'clean' ], () ->
 
   # Load bower files
   bowerPipe = gulp.src('./bower.json')
-    .pipe(bowerFiles(".*common-require.*"))
+    .pipe(bowerFiles())
 
   # Compile Coffee script
   coffeePipe = gulp.src(source.coffee)
-    .pipe(sourcemaps.init({ loadMaps: true}))
+    .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(coffee()).on('error', gutil.log)
     .pipe(sourcemaps.write())
 
-  merge(bowerPipe, coffeePipe, gulp.src(source.js))
+  code = merge(coffeePipe, gulp.src(source.js))
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(wrapCommonJs({
       pathModifier: (path) ->
         path.replace /^.*\/src\/js\//, ''
           .replace /^.*\/bower_components\//, ''
     }))
-    # .pipe(uglify())
+    .pipe(sourcemaps.write())
+
+  merge(bowerPipe, code)
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
     .pipe(concat('all.min.js'))
     .pipe(sourcemaps.write(target.maps))
     .pipe(gulp.dest(target.public))
