@@ -4,6 +4,7 @@ merge = require 'merge-stream'
 
 coffee = require 'gulp-coffee'
 concat = require 'gulp-concat'
+gulpIf = require 'gulp-if'
 uglify = require 'gulp-uglify'
 gulpJade = require 'gulp-jade'
 bower = require 'gulp-bower'
@@ -45,19 +46,21 @@ gulp.task 'scripts', [ 'clean' ], () ->
     .pipe(coffee()).on('error', gutil.log)
     .pipe(sourcemaps.write())
 
+  commonWrapper = wrapCommonJs({
+    pathModifier: (path) ->
+      path.replace /^.*\/src\/js\//, ''
+        .replace /^.*\/bower_components\//, ''
+        .replace /\.js$/, ''
+  })
+
   code = merge(coffeePipe, gulp.src(source.js))
     .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(wrapCommonJs({
-      pathModifier: (path) ->
-        path.replace /^.*\/src\/js\//, ''
-          .replace /^.*\/bower_components\//, ''
-          .replace /\.js$/, ''
-    }))
+    .pipe(gulpIf(!/.*commonjs-require.*/, commonWrapper))
     .pipe(sourcemaps.write())
 
   merge(bowerPipe, code)
     .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(uglify())
+    #.pipe(uglify())
     .pipe(concat('all.min.js'))
     .pipe(sourcemaps.write(target.maps))
     .pipe(gulp.dest(target.public))

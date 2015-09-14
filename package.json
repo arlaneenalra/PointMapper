@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "gulp-bower": "0.0.10",
+    "gulp-if": "^1.2.5",
     "gulp-main-bower-files": "^1.2.1",
     "gulp-wrap-commonjs": "^0.1.13"
   }
