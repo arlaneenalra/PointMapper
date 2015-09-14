@@ -54,10 +54,14 @@ gulp.task 'scripts', [ 'clean' ], () ->
         .replace /^.*\/bower_components\//, ''
         .replace /\.js$/, ''
   })
+  
+  wrapMatcher = (file) ->
+    pattern = /commonjs-require.*/
+    !file.path.match(pattern)
 
   code = merge(coffeePipe, gulp.src(source.js))
     .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(gulpIf(!/.*commonjs-require.*/, commonWrapper))
+    .pipe(gulpIf(wrapMatcher, commonWrapper))
     .pipe(sourcemaps.write())
 
   merge(bowerPipe, code)
