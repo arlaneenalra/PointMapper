@@ -20,9 +20,11 @@ source =
   coffee: [ 'src/js/**/*.coffee' ]
   js: [ 'src/js/**/*.js' ]
   html: [ 'src/**/*.jade' ]
+  assets: [ 'assets/**/*' ]
 
 target =
   public: 'build/objects'
+  assets: 'build/objects/assets'
   maps: 'maps'
 
 # Clean Task
@@ -60,7 +62,7 @@ gulp.task 'scripts', [ 'clean' ], () ->
 
   merge(bowerPipe, code)
     .pipe(sourcemaps.init({ loadMaps: true }))
-    #.pipe(uglify())
+    .pipe(uglify())
     .pipe(concat('all.min.js'))
     .pipe(sourcemaps.write(target.maps))
     .pipe(gulp.dest(target.public))
@@ -75,9 +77,17 @@ gulp.task 'html', [ 'clean' ], () ->
     .pipe(gulpJade(jadeConfig))
     .pipe(gulp.dest(target.public))
 
+# copy raw assets
+gulp.task 'assets', [ 'clean' ], () ->
+  gulp.src(source.assets)
+    .pipe(gulp.dest(target.assets))
+
+
 # Setup watch
 gulp.task 'watch', [ 'default' ], () ->
-  gulp.watch [ 'src/**/*' ], [ 'default' ]
+  gulp.watch [ 'src/**/*', 'assets/**/*' ], [ 'default' ]
 
-gulp.task 'default', [ 'scripts', 'html' ]
+gulp.task 'default', [ 'scripts', 'html', 'assets' ]
+
+
 
