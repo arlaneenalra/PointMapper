@@ -14,7 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "~1.4.7",
+    "angular": "~1.6.1",
     "commonjs-require": "~1.4.5"
   }
 }
