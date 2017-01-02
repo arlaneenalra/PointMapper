@@ -29,5 +29,8 @@
     "gulp-util": "^3.0.6",
     "gulp-wrap-commonjs": "^0.1.13",
     "merge-stream": "^1.0.0"
+  },
+  "dependencies": {
+    "pug": "^2.0.0-beta6"
   }
 }
