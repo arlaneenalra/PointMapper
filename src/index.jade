@@ -1,14 +1,28 @@
 doctype html 
 html(lang="en")
-  head
+    head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+                   
     title Hello World!
+    
+    link(href="assets/bootstrap/css/bootstrap.min.css", rel="stylesheet")
+    link(href="assets/theme.css", rel="stylesheet")
 
     script(type='text/javascript', src='all.min.js')
     script.
       require('base');
 
-  body
-    h1 Hello World!
-    p.
-      Working on something a little more interesting.
-      Let's see if I can get this to work.
+  body(ng-app="pointMapperApp")
+    
+    // setup a nav bar
+    nav(class="navbar navbar-default")
+        .container.contianer-fluid
+            
+            p.navbar-text.
+              PointMapper Lite
+
+
+    // File upload form
+    .container.container-fluid(ng-view="")

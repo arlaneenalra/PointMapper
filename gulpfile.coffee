@@ -71,7 +71,7 @@ gulp.task 'scripts', () ->
 
   merge(bowerPipe, code)
     .pipe sourcemaps.init({ loadMaps: true })
-    .pipe(uglify({ mangle: false}))
+    # .pipe(uglify({ mangle: false}))
     .pipe concat('all.min.js')
     .pipe sourcemaps.write(target.maps)
     .pipe gulp.dest(target.public)

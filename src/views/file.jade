@@ -1,0 +1,38 @@
+.row.row-padded
+    .col-xs-3
+        .input-group.input-group-xs
+            span.input-group-addon Height
+            input.form-control(ng-model="canvas.height")
+
+    .col-xs-3
+        .input-group.input-group-xs
+            span.input-group-addon Width 
+            input.form-control(ng-model="canvas.width")
+
+    .col-xs-6
+        .input-group.input-group-xs
+            span.input-group-addon File to Map:
+            input.form-control(type="file", fileread="imageFile", ng-disabled="!canvas.validSize")
+
+.row.row-padded
+    .col-xs-8
+        .panel.panel-default(ng-if="imageFile")
+            .panel-heading Place Canvas Box
+
+            .panel-body
+                //.row
+                //    .col-xs-4
+                //        .btn-group
+                //            button.btn.btn-default(ng-click="rotLeft()") Rotate Left
+                //            button.btn.btn-default(ng-click="rotRight()") Rotate Right
+
+                // .row
+                //    img.col-xs-12(ng-src="{{ imageFile }}", img-reader="readSize" ng-click="logPosition($event)" ng-style="imageStyle")
+
+                .row
+                    .col-xs-12(mapping-box,file="imageFile")
+    .col-xs-4
+        ul
+            li(ng-repeat="point in loggedPoints")  {{ point.x }}, {{ point.y }} 
+
+
