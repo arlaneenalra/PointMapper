@@ -15,7 +15,7 @@ wrapCommonJs  = require 'gulp-wrap-commonjs'
 
 sourcemaps = require 'gulp-sourcemaps'
 
-jade = require 'jade'
+jade = require 'pug'
 del = require 'del'
 
 source =
