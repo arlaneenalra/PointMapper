@@ -43,10 +43,6 @@ mod.controller 'MainCtrl', ($scope, $log) ->
     $scope.rotRight = () -> newAngle true
 
    
-    # log click
-    $scope.logPosition = ($event) ->
-        points.push { x:  $event.offsetX, y: $event.offsetY }
-
     # validate that we have a real size
     $scope.$watchGroup [ 'canvas.width', 'canvas.height' ], () ->
         canvas.validSize = canvas.height > 0 && canvas.width > 0
