@@ -13,10 +13,15 @@ makeBox =  (height, width, aspectRatio) ->
     else
         scale = height / box.height
 
-    return {
-        height: (Math.floor box.height * scale),
-        width: (Math.floor box.width * scale)
-    }
+    box.height = (Math.floor box.height * scale)
+    box.width = (Math.floor box.width * scale)
+
+    # calculate bounding box for top left corner
+
+    box.maxX = width - box.width
+    box.maxY = height - box.height
+
+    return box
 
 mod.directive "mappingBox", () ->
     {
@@ -34,7 +39,7 @@ mod.directive "mappingBox", () ->
                 darkBackground: false
             }
             
-            mappingBox = false 
+            mappingBox = false
 
             stage = new createjs.Stage canvas
 
@@ -46,13 +51,40 @@ mod.directive "mappingBox", () ->
                 # add our Box!
                 boxDimensions = makeBox canvas.height, canvas.width, scope.aspectRatio
                 mappingBox = new createjs.Shape()
+                hitBox = new createjs.Shape()
+
+                # calculate line width based on the on screen canvas size
+                boxWidth = canvas.clientWidth * 0.0075
+                boxWidth = Math.max(boxWidth, 1)
                 
                 # setup a sane box color
                 boxColor = if options.darkBackground then "white" else "black"
 
                 mappingBox.graphics
-                    .ss(5).s(boxColor).r(0,0,boxDimensions.width, boxDimensions.height)
+                    .ss(boxWidth).s(boxColor).r(0,0,boxDimensions.width, boxDimensions.height)
 
+                hitBox.graphics.f('#000').r(0,0,boxDimensions.width, boxDimensions.height)
+
+                mappingBox.hitArea = hitBox
+               
+                # tracks where the mose is inside the mapping box
+                mouseOffset = { x: 0, y: 0 }
+
+                # Handle mouse event listeners
+                mappingBox.addEventListener 'mousedown', (e) ->
+                    # Map mouse position to the upper left corner of the canvas 
+                    mouseOffset.x = e.stageX - mappingBox.x
+                    mouseOffset.y = e.stageY - mappingBox.y
+    
+                mappingBox.addEventListener 'pressmove', (e) ->
+                    mouseX = e.stageX - mouseOffset.x
+                    mouseY = e.stageY - mouseOffset.y
+                    
+                    mappingBox.x = Math.max(0, Math.min(mouseX, boxDimensions.maxX))
+                    mappingBox.y = Math.max(0, Math.min(mouseY, boxDimensions.maxY))
+
+                    stage.update()
+                
                 stage.addChild(mappingBox)
 
             # make sure we update on changes 
@@ -82,11 +114,9 @@ mod.directive "mappingBox", () ->
                 
                         if scope.resetCallback then resetCallback()
 
-
-
-               
                 image.src = scope.file
-
-            # setup canvase event handlers
+            
+            #stage.addEventListener 'pressmove', (e) ->
+            #    console.log e
     }
 
