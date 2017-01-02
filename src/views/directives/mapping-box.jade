@@ -12,11 +12,13 @@
         //    img.col-xs-12(ng-src="{{ imageFile }}", img-reader="readSize" ng-click="logPosition($event)" ng-style="imageStyle")
         .row.row-padded
             .col-xs-4
-                .input-group
-                    span.input-group-addon
-                        input(type="checkbox",ng-model="options.darkBackground")
-                    span.form-control Dark Background?
-        .row
+                .btn-group
+                    button.btn.btn-default(ng-click="smaller()") -
+                    button.btn.btn-default(ng-click="larger()") +
+            .col-xs-8
+                button.btn.btn-default.pull-right(ng-click="done()") Done
+
+        .row.row-padded
             .col-xs-12
                 canvas
 

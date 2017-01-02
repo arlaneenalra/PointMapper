@@ -16,11 +16,6 @@ makeBox =  (height, width, aspectRatio) ->
     box.height = (Math.floor box.height * scale)
     box.width = (Math.floor box.width * scale)
 
-    # calculate bounding box for top left corner
-
-    box.maxX = width - box.width
-    box.maxY = height - box.height
-
     return box
 
 mod.directive "mappingBox", () ->
@@ -35,13 +30,22 @@ mod.directive "mappingBox", () ->
         link: (scope, element, attributes) ->
             imageData = scope.imageData = {}
             canvas = element.find('canvas')[0]
-            options = scope.options = {
-                darkBackground: false
-            }
             
             mappingBox = false
 
             stage = new createjs.Stage canvas
+
+            scope.smaller = () ->
+                if mappingBox
+                    mappingBox.scaleX -= 0.1
+                    mappingBox.scaleY -= 0.1
+                    stage.update()
+
+            scope.larget = () ->
+                if mappingBox 
+                    mappingBox.scaleX += 0.1
+                    mappingBox.scaleY += 0.1
+                    stage.update()
 
             updateMappingBox = () ->
                 # remove any old mapping boxes
@@ -51,22 +55,14 @@ mod.directive "mappingBox", () ->
                 # add our Box!
                 boxDimensions = makeBox canvas.height, canvas.width, scope.aspectRatio
                 mappingBox = new createjs.Shape()
-                hitBox = new createjs.Shape()
 
                 # calculate line width based on the on screen canvas size
                 boxWidth = canvas.clientWidth * 0.0075
                 boxWidth = Math.max(boxWidth, 1)
                 
-                # setup a sane box color
-                boxColor = if options.darkBackground then "white" else "black"
-
                 mappingBox.graphics
-                    .ss(boxWidth).s(boxColor).r(0,0,boxDimensions.width, boxDimensions.height)
+                    .f('rgba(0,0,0,0.45)').r(0,0,boxDimensions.width, boxDimensions.height)
 
-                hitBox.graphics.f('#000').r(0,0,boxDimensions.width, boxDimensions.height)
-
-                mappingBox.hitArea = hitBox
-               
                 # tracks where the mose is inside the mapping box
                 mouseOffset = { x: 0, y: 0 }
 
@@ -79,9 +75,12 @@ mod.directive "mappingBox", () ->
                 mappingBox.addEventListener 'pressmove', (e) ->
                     mouseX = e.stageX - mouseOffset.x
                     mouseY = e.stageY - mouseOffset.y
-                    
-                    mappingBox.x = Math.max(0, Math.min(mouseX, boxDimensions.maxX))
-                    mappingBox.y = Math.max(0, Math.min(mouseY, boxDimensions.maxY))
+                   
+                    maxX = canvas.width - (boxDimensions.width * mappingBox.scaleX)
+                    maxY = canvas.height - (boxDimensions.height * mappingBox.scaleY)
+
+                    mappingBox.x = Math.max(0, Math.min(mouseX, maxX))
+                    mappingBox.y = Math.max(0, Math.min(mouseY, maxY))
 
                     stage.update()
                 
@@ -116,7 +115,5 @@ mod.directive "mappingBox", () ->
 
                 image.src = scope.file
             
-            #stage.addEventListener 'pressmove', (e) ->
-            #    console.log e
     }
 

@@ -15,9 +15,5 @@
             input.form-control(type="file", fileread="imageFile", ng-disabled="!canvas.validSize")
 
 .row.row-padded(ng-if="imageFile")
-    .col-xs-8(mapping-box,file="imageFile",aspect-ratio="canvas.aspectRatio")
-    .col-xs-4
-        ul
-            li(ng-repeat="point in loggedPoints")  {{ point.x }}, {{ point.y }} 
-
+    .col-xs-12(mapping-box,file="imageFile",aspect-ratio="canvas.aspectRatio")
 
