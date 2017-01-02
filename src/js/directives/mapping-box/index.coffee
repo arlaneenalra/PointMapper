@@ -42,7 +42,7 @@ mod.directive "mappingBox", () ->
                     mappingBox.scaleY -= 0.1
                     stage.update()
 
-            scope.large = () ->
+            scope.larger = () ->
                 if mappingBox
                     mappingBox.scaleX += 0.1
                     mappingBox.scaleY += 0.1
