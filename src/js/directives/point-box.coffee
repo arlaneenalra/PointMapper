@@ -76,11 +76,9 @@ mod.directive "pointBox", () ->
 
                                 # find this point in our list and nuke it
                                 shapeList.splice(shapeList.indexOf(point), 1)
-                                console.log shapeList
 
                             stage.addChild(point)
 
-                            console.log [e.stageX, e.stageY, cSize ]
                             stage.update()
 
                         # update the stage
