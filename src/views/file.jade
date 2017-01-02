@@ -1,13 +1,13 @@
 .row.row-padded
     .col-xs-3
         .input-group.input-group-xs
-            span.input-group-addon Height
-            input.form-control(ng-model="canvas.height")
+            span.input-group-addon Width 
+            input.form-control(ng-model="canvas.width")
 
     .col-xs-3
         .input-group.input-group-xs
-            span.input-group-addon Width 
-            input.form-control(ng-model="canvas.width")
+            span.input-group-addon Height
+            input.form-control(ng-model="canvas.height")
 
     .col-xs-6
         .input-group.input-group-xs
@@ -15,7 +15,7 @@
             input.form-control(type="file", fileread="imageFile", ng-disabled="!canvas.validSize")
 
 .row.row-padded(ng-if="imageFile")
-    .col-xs-8(mapping-box,file="imageFile")
+    .col-xs-8(mapping-box,file="imageFile",aspect-ratio="canvas.aspectRatio")
     .col-xs-4
         ul
             li(ng-repeat="point in loggedPoints")  {{ point.x }}, {{ point.y }} 
