@@ -14,6 +14,9 @@
             span.input-group-addon File to Map:
             input.form-control(type="file", fileread="imageFile", ng-disabled="!canvas.validSize")
 
-.row.row-padded(ng-if="imageFile")
-    .col-xs-12(mapping-box,file="imageFile",aspect-ratio="canvas.aspectRatio")
+.row.row-padded(ng-if="imageFile && loadingFile")
+    .col-xs-12(mapping-box,file="imageFile",aspect-ratio="canvas.aspectRatio", done-callback="doneCallback")
+
+.row.row-padded(ng-if="imageFile && !loadingFile")
+    .col-xs-12(point-box,file="imageFile",canvas="canvas",source-rect="sourceRect",done-callback="showPoints")
 

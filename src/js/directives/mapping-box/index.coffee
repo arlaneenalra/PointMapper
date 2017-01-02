@@ -23,7 +23,7 @@ mod.directive "mappingBox", () ->
         restrict: 'AE'
         scope: {
             file: '=',
-            resetCallback: '=',
+            doneCallback: '=',
             aspectRatio: '='
         },
         templateUrl: 'views/directives/mapping-box.html',
@@ -32,6 +32,7 @@ mod.directive "mappingBox", () ->
             canvas = element.find('canvas')[0]
             
             mappingBox = false
+            boxDimensions = false
 
             stage = new createjs.Stage canvas
 
@@ -41,8 +42,8 @@ mod.directive "mappingBox", () ->
                     mappingBox.scaleY -= 0.1
                     stage.update()
 
-            scope.larget = () ->
-                if mappingBox 
+            scope.large = () ->
+                if mappingBox
                     mappingBox.scaleX += 0.1
                     mappingBox.scaleY += 0.1
                     stage.update()
@@ -87,7 +88,7 @@ mod.directive "mappingBox", () ->
                 stage.addChild(mappingBox)
 
             # make sure we update on changes 
-            scope.$watchGroup [ 'options.darkBackground', 'aspectRatio' ], () ->
+            scope.$watchGroup [ 'aspectRatio' ], () ->
                 updateMappingBox()
                 stage.update()
 
@@ -110,10 +111,18 @@ mod.directive "mappingBox", () ->
 
                         # update the stage
                         stage.update()
-                
-                        if scope.resetCallback then resetCallback()
 
                 image.src = scope.file
-            
+
+            scope.done = () ->
+                return if !boxDimensions
+                
+                if scope.doneCallback
+                    scope.doneCallback new createjs.Rectangle(
+                        mappingBox.x, mappingBox.y,
+                        boxDimensions.width * mappingBox.scaleX,
+                        boxDimensions.height * mappingBox.scaleY
+                    )
+
     }
 
