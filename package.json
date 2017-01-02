@@ -1,11 +1,7 @@
 {
-  "name": "html5-base",
-  "version": "0.0.0",
-  "description": "A quick and dirty baseline setup for building html5 applications.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "name": "pointmapper",
+  "version": "0.1.0",
+  "description": "A simple tool to map points on a picture to a different coordinate system.",
   "keywords": [
     "html5",
     "coffee-script",
@@ -13,7 +9,7 @@
     "jade"
   ],
   "author": "Chris Salch",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "bower": "^1.5.2",
     "coffee-script": "^1.10.0",
