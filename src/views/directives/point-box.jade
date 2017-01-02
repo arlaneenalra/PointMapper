@@ -3,10 +3,15 @@
 
     .panel-body
         .row.row-padded
-            .col-xs-4
-                .btn-group
-                    button.btn.btn-default(ng-click="smaller()") -
-                    button.btn.btn-default(ng-click="larger()") +
+            .col-xs-2
+                .input-group
+                    span.input-group-addon X
+                    span.form-control {{ mouseLocation.y | number: 2 }}
+            .col-xs-2
+                .input-group
+                    span.input-group-addon Y
+                    span.form-control {{ mouseLocation.y | number: 2 }}
+
             .col-xs-8
                 button.btn.btn-default.pull-right(ng-click="done()") Done
 

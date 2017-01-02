@@ -1,5 +1,8 @@
 mod = angular.module 'pointMapperPointBox', []
 
+mapAxis = (x, realSize, mappedSize) ->
+    x * ( realSize / mappedSize)
+
 mod.directive "pointBox", () ->
     {
         restrict: 'AE'
@@ -14,9 +17,28 @@ mod.directive "pointBox", () ->
             imageData = scope.imageData = {}
             canvas = element.find('canvas')[0]
 
-            pointList = []
+            mouseLocation = scope.mouseLocation = { x: 0, y: 0 }
+
+            shapeList = []
             
             stage = new createjs.Stage canvas
+
+            stage.addEventListener 'stagemousemove', (e) ->
+                scope.$apply () ->
+                    mouseLocation.x = mapAxis e.stageX, scope.canvas.width, canvas.width
+                    mouseLocation.y = mapAxis e.stageY, scope.canvas.height, canvas.height
+
+            # handle done callback
+            scope.done = () ->
+                mappedPoints = []
+
+                for shape in shapeList
+                    mappedPoints.push {
+                        x: mapAxis(shape.x, scope.canvas.width, canvas.width)
+                        y: mapAxis(shape.y, scope.canvas.height, canvas.height)
+                    }
+
+                scope.doneCallback(mappedPoints)
 
             # Reload canvas when the file changes
             scope.$watch 'file', () ->
@@ -45,7 +67,7 @@ mod.directive "pointBox", () ->
                             point.x = e.stageX
                             point.y = e.stageY
                             
-                            pointList.push point
+                            shapeList.push point
 
                             # allow points to be removed
                             point.addEventListener 'click', (e) ->
@@ -53,8 +75,8 @@ mod.directive "pointBox", () ->
                                 stage.update()
 
                                 # find this point in our list and nuke it
-                                pointList.splice(pointList.indexOf(point), 1)
-                                console.log pointList
+                                shapeList.splice(shapeList.indexOf(point), 1)
+                                console.log shapeList
 
                             stage.addChild(point)
 

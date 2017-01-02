@@ -1,22 +1,36 @@
-.row.row-padded
+.row.row-padded(ng-hide="!loadingFile")
     .col-xs-3
         .input-group.input-group-xs
             span.input-group-addon Width 
-            input.form-control(ng-model="canvas.width")
+            input.form-control(ng-model="canvas.width", ng-disabled="!loadingFile")
 
     .col-xs-3
         .input-group.input-group-xs
             span.input-group-addon Height
-            input.form-control(ng-model="canvas.height")
+            input.form-control(ng-model="canvas.height", ng-disabled="!loadingFile")
 
     .col-xs-6
         .input-group.input-group-xs
             span.input-group-addon File to Map:
-            input.form-control(type="file", fileread="imageFile", ng-disabled="!canvas.validSize")
+            input.form-control(type="file", fileread="imageFile", ng-disabled="!canvas.validSize || !loadingFile")
 
 .row.row-padded(ng-if="imageFile && loadingFile")
     .col-xs-12(mapping-box,file="imageFile",aspect-ratio="canvas.aspectRatio", done-callback="doneCallback")
 
-.row.row-padded(ng-if="imageFile && !loadingFile")
+.row.row-padded(ng-if="drawingPoints")
     .col-xs-12(point-box,file="imageFile",canvas="canvas",source-rect="sourceRect",done-callback="showPoints")
 
+.row.row-padded(ng-if="pointList")
+    .col-xs-12
+        .panel
+            .panel-heading Points to Draw
+            .panel-body
+                .row
+                    .col-xs-4
+                        a(ng-href="{{pointCsv}}") Download List
+
+                        ul
+                            li(ng-repeat="point in pointList").
+                                ( {{ point.x | number:2 }}, {{ point.y | number:2}} )
+                    .col-xs-8
+                        button.btn.btn-default(ng-click="startOver()") Start Over
